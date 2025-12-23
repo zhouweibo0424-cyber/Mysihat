@@ -1,0 +1,31 @@
+# ---- OS / Editor ----
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# ---- Logs / Temp ----
+*.log
+tmp/
+cache/
+
+# ---- Secrets / Local config ----
+.env
+config.local.php
+config.php
+
+# ---- MySQL / XAMPP data (DO NOT COMMIT) ----
+**/mysql/data/
+**/xampp/mysql/data/
+**/data/mysql/
+ibdata1
+ib_logfile*
+ibtmp1
+aria_log*
+*.ibd
+*.frm
+*.MYD
+*.MYI
+
+# ---- Dumps backup ----
+*.sql.bak
