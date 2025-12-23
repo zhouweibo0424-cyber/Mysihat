@@ -22,6 +22,7 @@ $current_name = $_SESSION["user_name"] ?? "User";
         <li class="nav-item"><a class="nav-link" href="/mysihat/pages/diet.php"><i class="bi bi-egg-fried"></i> Diet</a></li>
         <li class="nav-item"><a class="nav-link" href="/mysihat/pages/points.php"><i class="bi bi-stars"></i> Points</a></li>
         <li class="nav-item"><a class="nav-link" href="/mysihat/pages/leaderboard.php"><i class="bi bi-trophy"></i> Leaderboard</a></li>
+        <li class="nav-item"><a class="nav-link" href="/mysihat/pages/courses.php"><i class="bi bi-collection-play"></i> Courses</a></li>
       </ul>
 
       <div class="d-flex align-items-center gap-2">
