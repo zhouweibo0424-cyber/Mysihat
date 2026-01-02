@@ -4,6 +4,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 }
 $current_name = $_SESSION["user_name"] ?? "User";
 ?>
+
 <nav class="navbar navbar-expand-lg bg-white border-bottom">
   <div class="container">
     <a class="navbar-brand fw-bold" href="/mysihat/pages/dashboard.php">
@@ -24,10 +25,29 @@ $current_name = $_SESSION["user_name"] ?? "User";
         <li class="nav-item"><a class="nav-link" href="/mysihat/pages/leaderboard.php"><i class="bi bi-trophy"></i> Leaderboard</a></li>
       </ul>
 
-      <div class="d-flex align-items-center gap-2">
-        <span class="small-muted">Signed in as <span class="fw-semibold"><?php echo htmlspecialchars($current_name); ?></span></span>
-        <a class="btn btn-outline-danger btn-sm" href="/mysihat/auth/logout.php">Logout</a>
+      <!-- User dropdown menu -->
+      <div class="d-flex align-items-center">
+        <div class="dropdown">
+          <a class="d-flex align-items-center text-decoration-none text-dark fw-medium dropdown-toggle"
+             href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-person-circle fs-4 me-2"></i>
+            <?= htmlspecialchars($current_name) ?>
+          </a>
+
+          <ul class="dropdown-menu dropdown-menu-end shadow">
+            <li>
+              <a class="dropdown-item" href="/mysihat/pages/profile.php?complete_profile=1">
+                <i class="bi bi-pencil-square me-2"></i> Edit Profile
+              </a>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <a class="dropdown-item text-danger" href="/mysihat/auth/logout.php">
+                <i class="bi bi-box-arrow-right me-2"></i> Logout
+              </a>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
-</nav>
