@@ -257,11 +257,24 @@ try {
     <div style="display:flex; gap:12px; flex-wrap:wrap;">
       <div>
         <div class="small">Start date</div>
-        <input type="date" name="start_date" required>
+        <input
+  type="text"
+  name="start_date"
+  placeholder="YYYY-MM-DD"
+  pattern="\d{4}-\d{2}-\d{2}"
+  required
+>
+
       </div>
       <div>
         <div class="small">End date (optional)</div>
-        <input type="date" name="end_date">
+        <input
+  type="text"
+  name="end_date"
+  placeholder="YYYY-MM-DD"
+  pattern="\d{4}-\d{2}-\d{2}"
+>
+
       </div>
       <div>
         <div class="small">Cycle length (days)</div>
