@@ -12,20 +12,26 @@ header('Content-Type: application/json');
 require_once __DIR__ . "/../lib/db.php";
 require_once __DIR__ . "/../lib/auth.php";
 
+// 【核心修复 1】确保 PHP 使用吉隆坡时区
+date_default_timezone_set('Asia/Kuala_Lumpur');
+
+// 【核心修复 2】强制同步 MySQL 连接时区，确保 SQL 内部函数（如 TIMESTAMPDIFF）计算结果准确
+$pdo->exec("SET time_zone = '+08:00'");
+
 $user_id = get_user_id();
 $input = json_decode(file_get_contents('php://input'), true);
 
 if (!is_array($input)) {
-  http_response_code(400);
-  echo json_encode(['ok' => false, 'error' => 'Invalid JSON']);
-  exit();
+    http_response_code(400);
+    echo json_encode(['ok' => false, 'error' => 'Invalid JSON']);
+    exit();
 }
 
 $workout_id = isset($input['workout_id']) ? (int)$input['workout_id'] : 0;
 if ($workout_id <= 0) {
-  http_response_code(400);
-  echo json_encode(['ok' => false, 'error' => 'Invalid workout_id']);
-  exit();
+    http_response_code(400);
+    echo json_encode(['ok' => false, 'error' => 'Invalid workout_id']);
+    exit();
 }
 
 // Verify workout belongs to user and exists
@@ -34,21 +40,21 @@ $stmt->execute([$workout_id]);
 $workout = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$workout || (int)$workout['user_id'] !== (int)$user_id) {
-  http_response_code(403);
-  echo json_encode(['ok' => false, 'error' => 'Access denied']);
-  exit();
+    http_response_code(403);
+    echo json_encode(['ok' => false, 'error' => 'Access denied']);
+    exit();
 }
 
 if (empty($workout['start_time'])) {
-  http_response_code(400);
-  echo json_encode(['ok' => false, 'error' => 'Workout has no start_time']);
-  exit();
+    http_response_code(400);
+    echo json_encode(['ok' => false, 'error' => 'Workout has no start_time']);
+    exit();
 }
 
-// Always use server time (ignore client-supplied end_time/duration_min)
+// 【核心修复 3】忽略前端可能传入的错误时间，统一使用服务器当前校准后的 KL 时间
 $end_time = date('Y-m-d H:i:s');
 
-// Update workout using MySQL diff (stable, avoids client timezone issues)
+// Update workout using MySQL diff
 $stmt = $pdo->prepare("
   UPDATE workouts
   SET end_time = ?,
@@ -64,7 +70,7 @@ $stmt->execute([$workout_id]);
 $row = $stmt->fetch(PDO::FETCH_ASSOC);
 $duration_min = isset($row['duration_min']) ? (int)$row['duration_min'] : 0;
 
-// Compute summary (keep your original structure, make volume null-safe)
+// Compute summary (保持原始结构不做修改)
 $stmt = $pdo->prepare("
   SELECT 
     COUNT(*) as total_items,

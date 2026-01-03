@@ -1,9 +1,41 @@
+-- MySihat AI (Web version) FULL database setup
+-- Combined from:
+--   1) database_setup.sql (core app + points + courses + achievements)
+--   2) healthy.sql (health module tables + seed data)
+--
+-- Generated on 2026-01-03 (Asia/Kuala_Lumpur)
+
 -- MySihat AI (Web version) database setup
 CREATE DATABASE IF NOT EXISTS mysihat
   CHARACTER SET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 
 USE mysihat;
+
+
+-- Clean re-runnable setup: drop existing tables first
+SET FOREIGN_KEY_CHECKS=0;
+DROP TABLE IF EXISTS `achievements`;
+DROP TABLE IF EXISTS `categories`;
+DROP TABLE IF EXISTS `contraindications`;
+DROP TABLE IF EXISTS `courses`;
+DROP TABLE IF EXISTS `daily_checkins`;
+DROP TABLE IF EXISTS `daily_steps`;
+DROP TABLE IF EXISTS `favorites`;
+DROP TABLE IF EXISTS `health_alerts`;
+DROP TABLE IF EXISTS `lessons`;
+DROP TABLE IF EXISTS `meals`;
+DROP TABLE IF EXISTS `medication_catalog`;
+DROP TABLE IF EXISTS `menstrual_cycles`;
+DROP TABLE IF EXISTS `points_ledger`;
+DROP TABLE IF EXISTS `reviews`;
+DROP TABLE IF EXISTS `rewards`;
+DROP TABLE IF EXISTS `symptom_catalog`;
+DROP TABLE IF EXISTS `symptom_rules`;
+DROP TABLE IF EXISTS `user_achievements`;
+DROP TABLE IF EXISTS `user_allergies`;
+DROP TABLE IF EXISTS `users`;
+SET FOREIGN_KEY_CHECKS=1;
 
 CREATE TABLE IF NOT EXISTS users (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -41,6 +73,77 @@ CREATE TABLE IF NOT EXISTS points_ledger (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
+-- =========================================================
+-- Health Module (from healthy.sql)
+-- Tables: symptom_catalog, medication_catalog, contraindications,
+--         symptom_rules, health_alerts, user_allergies, menstrual_cycles
+-- =========================================================
+
+CREATE TABLE IF NOT EXISTS symptom_catalog (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  symptom_key VARCHAR(50) NOT NULL UNIQUE,
+  symptom_name VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS medication_catalog (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  med_key VARCHAR(50) NOT NULL UNIQUE,
+  med_name VARCHAR(100) NOT NULL,
+  med_type VARCHAR(30) DEFAULT 'OTC',
+  notes VARCHAR(255) DEFAULT NULL
+);
+
+CREATE TABLE IF NOT EXISTS contraindications (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  allergy_key VARCHAR(80) NOT NULL,
+  med_key VARCHAR(50) NOT NULL,
+  note VARCHAR(255) DEFAULT NULL
+);
+
+CREATE TABLE IF NOT EXISTS symptom_rules (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  rule_name VARCHAR(100) NOT NULL,
+  symptoms_csv VARCHAR(255) NOT NULL,
+  severity ENUM('low','medium','high') DEFAULT 'low',
+  advice TEXT NOT NULL,
+  red_flags TEXT DEFAULT NULL,
+  recommend_meds_csv VARCHAR(255) DEFAULT NULL
+);
+
+CREATE TABLE IF NOT EXISTS health_alerts (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(150) NOT NULL,
+  description TEXT NOT NULL,
+  prevention_tips TEXT NOT NULL,
+  start_date DATE NOT NULL,
+  end_date DATE NOT NULL,
+  is_active TINYINT(1) DEFAULT 1
+);
+
+CREATE TABLE IF NOT EXISTS user_allergies (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  allergy_key VARCHAR(80) NOT NULL,
+  allergy_name VARCHAR(120) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  KEY idx_user (user_id),
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS menstrual_cycles (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  start_date DATE NOT NULL,
+  end_date DATE DEFAULT NULL,
+  cycle_length INT DEFAULT 28,
+  notes VARCHAR(255) DEFAULT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  KEY idx_user (user_id),
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+
 
 -- Fitness video module
 CREATE TABLE IF NOT EXISTS categories (
@@ -101,6 +204,80 @@ CREATE TABLE IF NOT EXISTS favorites (
   UNIQUE KEY uniq_user_course (user_id, course_id),
   FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE
 );
+
+
+-- Create achievements definition table
+CREATE TABLE achievements (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    code VARCHAR(50) UNIQUE NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    description VARCHAR(255) NOT NULL,
+    icon VARCHAR(50) DEFAULT 'trophy',
+    color_class VARCHAR(30) DEFAULT 'text-warning',
+    required_points INT DEFAULT 0,
+    required_steps BIGINT DEFAULT 0,
+    sort_order INT DEFAULT 100
+);
+
+-- Create user achievements unlock record table
+CREATE TABLE user_achievements (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    achievement_id INT NOT NULL,
+    unlocked_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY uniq_user_ach (user_id, achievement_id)
+);
+
+CREATE TABLE IF NOT EXISTS rewards (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    reward_name VARCHAR(100) NOT NULL,
+    points_required INT NOT NULL,
+    description VARCHAR(255)
+);
+
+CREATE TABLE daily_checkins (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    checkin_date DATE NOT NULL,
+    points_earned INT DEFAULT 10,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY uniq_user_date (user_id, checkin_date)
+);
+
+ALTER TABLE users ADD COLUMN checkin_streak INT DEFAULT 0;
+ALTER TABLE users ADD COLUMN last_checkin_date DATE DEFAULT NULL;
+
+INSERT INTO rewards (reward_name, points_required, description) VALUES
+('Healthy Badge', 50, 'Awarded for maintaining healthy habits'),
+('Fitness Coupon', 100, 'Discount coupon for fitness products'),
+('Premium Access', 200, 'Unlock premium features');
+
+
+-- Insert initial achievements (feel free to add more!)
+INSERT INTO achievements (code, name, description, icon, color_class, required_points, required_steps, sort_order) VALUES
+('starter', 'Healthy Starter', 'Earn a total of 100 points to begin your healthy journey', 'award', 'text-success', 100, 0, 10),
+('walker_10k', '10K Step Master', 'Walk a total of 10,000 steps', 'footprints', 'text-info', 0, 10000, 20),
+('point_collector', 'Point Collector', 'Earn a total of 300 points', 'gem', 'text-primary', 300, 0, 30),
+('consistent', 'Consistency Star', 'Generate points for 7 consecutive days', 'star-fill', 'text-warning', 0, 0, 40),
+('elite', 'Elite Walker', 'Earn a total of 600 points and reach Pro level', 'trophy-fill', 'text-danger', 600, 0, 50),
+('marathon', 'Marathon Spirit', 'Walk a total of 50,000 steps', 'flag-fill', 'text-dark', 0, 50000, 60);
+
+
+ALTER TABLE users
+    ADD COLUMN full_name VARCHAR(100) DEFAULT NULL COMMENT 'Full name for display',
+    ADD COLUMN birth_date DATE DEFAULT NULL COMMENT 'Birth date',
+    ADD COLUMN phone VARCHAR(20) DEFAULT NULL COMMENT 'Phone number',
+    ADD COLUMN address VARCHAR(255) DEFAULT NULL COMMENT 'Home address',
+    ADD COLUMN country VARCHAR(50) DEFAULT NULL COMMENT 'Country',
+    ADD COLUMN language VARCHAR(10) DEFAULT 'en' COMMENT 'Preferred language (e.g., en, zh)',
+    ADD COLUMN height DECIMAL(6,2) DEFAULT NULL COMMENT 'Height in cm',
+    ADD COLUMN weight DECIMAL(7,3) DEFAULT NULL COMMENT 'Weight in kg',
+    ADD COLUMN gender ENUM('male', 'female', 'other') DEFAULT NULL COMMENT 'Gender',
+    ADD COLUMN daily_step_goal INT DEFAULT 10000 COMMENT 'Personal daily step target',
+    ADD COLUMN target_weight DECIMAL(7,3) DEFAULT NULL COMMENT 'Weight loss target (kg)',
+    ADD COLUMN expected_weeks TINYINT UNSIGNED DEFAULT NULL COMMENT 'How many weeks to reach target';
+
+
 
 -- Seed data for categories
 INSERT IGNORE INTO categories (name, slug) VALUES
@@ -187,3 +364,42 @@ VALUES
   (4, NULL, 5, 'Helped my back feel better.'),
   (5, NULL, 4, 'Solid core focus, good progressions.'),
   (6, NULL, 4, 'Sweaty and fun, nice variety.');
+
+
+
+-- =========================================================
+-- Health Module seed data (from healthy.sql)
+-- =========================================================
+
+-- Optional sample user (needed for sample menstrual_cycles/user_allergies rows)
+INSERT INTO `users` (`id`, `name`, `email`, `password_hash`, `created_at`) VALUES
+(1, 'ZUO XIAOYE', 'zuoxyusm@student.usm.my', '$2y$10$zh5H69H1LsBODFjFeuoWuuEBYTd6DVySHHJdDh2KXsix2OvOlCxFa', '2025-12-29 14:33:14');
+
+INSERT INTO `symptom_catalog` (`id`, `symptom_key`, `symptom_name`) VALUES
+(1, 'fever', 'Fever'),
+(2, 'cough', 'Cough'),
+(3, 'headache', 'Headache'),
+(4, 'sore_throat', 'Sore Throat'),
+(5, 'fatigue', 'Fatigue');
+
+INSERT INTO `medication_catalog` (`id`, `med_key`, `med_name`, `med_type`, `notes`) VALUES
+(1, 'paracetamol', 'Paracetamol', 'OTC', 'Reduce fever and mild pain'),
+(2, 'ibuprofen', 'Ibuprofen', 'OTC', 'Anti-inflammatory pain reliever'),
+(3, 'antihistamine', 'Antihistamine', 'OTC', 'Relieves allergy symptoms');
+
+INSERT INTO `symptom_rules` (`id`, `rule_name`, `symptoms_csv`, `severity`, `advice`, `red_flags`, `recommend_meds_csv`) VALUES
+(1, 'Flu-like symptoms', 'fever,cough,fatigue', 'medium', 'Rest well, drink warm fluids, and monitor symptoms.', 'If fever lasts more than 3 days, consult a doctor.', 'paracetamol'),
+(2, 'Mild headache', 'headache', 'low', 'Reduce screen time and stay hydrated.', NULL, 'paracetamol,ibuprofen');
+
+INSERT INTO `health_alerts` (`id`, `title`, `description`, `prevention_tips`, `start_date`, `end_date`, `is_active`) VALUES
+(1, 'Seasonal Influenza Alert', 'Increase in flu cases reported recently.', 'Wash hands frequently, avoid crowded places, and rest well.', '2025-12-30', '2026-01-29', 1);
+
+INSERT INTO `user_allergies` (`id`, `user_id`, `allergy_key`, `allergy_name`, `created_at`) VALUES
+(1, 1, 'seafood', 'seafood', '2025-12-30 07:24:19'),
+(2, 1, 'penicillin', 'penicillin', '2025-12-30 07:26:37');
+
+INSERT INTO `menstrual_cycles` (`id`, `user_id`, `start_date`, `end_date`, `cycle_length`, `notes`, `created_at`) VALUES
+(1, 1, '2026-01-01', '2026-01-08', 28, NULL, '2025-12-30 08:12:03');
+
+INSERT INTO `contraindications` (`id`, `allergy_key`, `med_key`, `note`) VALUES
+(1, 'penicillin', 'paracetamol', 'Consult a doctor before use');

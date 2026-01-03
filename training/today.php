@@ -99,11 +99,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["start_workout"])) {
   if (!$plan_day) {
     $error = "No plan found";
   } else {
+    // 1. 获取当前 PHP 环境的时间 (已在文件顶部设置为 Asia/Kuala_Lumpur)
+    $current_time = date('Y-m-d H:i:s');
+
+    // 2. 将这个 PHP 时间传给数据库，而不是让数据库自己生成
     $stmt = $pdo->prepare("
       INSERT INTO workouts (user_id, plan_day_id, start_time, status)
-      VALUES (?, ?, NOW(), 'completed')
+      VALUES (?, ?, ?, 'completed')
     ");
-    $stmt->execute([$user_id, $plan_day_id]);
+    $stmt->execute([$user_id, $plan_day_id, $current_time]);
     $workout_id = (int)$pdo->lastInsertId();
 
     $stmt = $pdo->prepare("
