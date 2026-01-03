@@ -23,12 +23,13 @@ $current_name = $_SESSION["user_name"] ?? "User";
         <li class="nav-item"><a class="nav-link" href="/mysihat/pages/diet.php"><i class="bi bi-egg-fried"></i> Diet</a></li>
         <li class="nav-item"><a class="nav-link" href="/mysihat/pages/points.php"><i class="bi bi-stars"></i> Points</a></li>
         <li class="nav-item"><a class="nav-link" href="/mysihat/pages/leaderboard.php"><i class="bi bi-trophy"></i> Leaderboard</a></li>
+        <li class="nav-item"><a class="nav-link" href="/mysihat/pages/achievements.php"><i class="bi bi-award"></i> Achievements</a></li>
       </ul>
 
-      <!-- User dropdown menu -->
+      <!-- User Dropdown -->
       <div class="d-flex align-items-center">
         <div class="dropdown">
-          <a class="d-flex align-items-center text-decoration-none text-dark fw-medium dropdown-toggle"
+          <a class="d-flex align-items-center text-decoration-none text-dark dropdown-toggle"
              href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="bi bi-person-circle fs-4 me-2"></i>
             <?= htmlspecialchars($current_name) ?>
@@ -51,3 +52,4 @@ $current_name = $_SESSION["user_name"] ?? "User";
       </div>
     </div>
   </div>
+</nav>
