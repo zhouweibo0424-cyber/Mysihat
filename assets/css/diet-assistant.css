@@ -1,0 +1,31 @@
+.diet-tabs .nav-link {
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+.diet-card {
+  border-radius: 16px;
+}
+
+.diet-pre {
+  border: 1px solid rgba(17,24,39,0.10);
+  border-radius: 14px;
+  background: #f8fafc;
+  padding: 12px;
+  overflow: auto;
+  min-height: 120px;
+}
+
+.diet-surface {
+  border: 1px solid rgba(17,24,39,0.10);
+  border-radius: 14px;
+  background: #f8fafc;
+  padding: 12px;
+}
+
+#dietAdvice {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  overflow-x: hidden;
+}
