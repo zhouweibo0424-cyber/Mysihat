@@ -18,12 +18,54 @@ $current_name = $_SESSION["user_name"] ?? "User";
 
     <div class="collapse navbar-collapse" id="mainNav">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item"><a class="nav-link" href="/mysihat/pages/dashboard.php"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
-        <li class="nav-item"><a class="nav-link" href="/mysihat/pages/steps.php"><i class="bi bi-person-walking"></i> Steps</a></li>
-        <li class="nav-item"><a class="nav-link" href="/mysihat/pages/diet.php"><i class="bi bi-egg-fried"></i> Diet</a></li>
-        <li class="nav-item"><a class="nav-link" href="/mysihat/pages/points.php"><i class="bi bi-stars"></i> Points</a></li>
-        <li class="nav-item"><a class="nav-link" href="/mysihat/pages/leaderboard.php"><i class="bi bi-trophy"></i> Leaderboard</a></li>
-        <li class="nav-item"><a class="nav-link" href="/mysihat/pages/achievements.php"><i class="bi bi-award"></i> Achievements</a></li>
+        <li class="nav-item">
+          <a class="nav-link" href="/mysihat/pages/dashboard.php">
+            <i class="bi bi-speedometer2"></i> Dashboard
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="/mysihat/pages/steps.php">
+            <i class="bi bi-person-walking"></i> Steps
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="/mysihat/pages/health.php">
+            <i class="bi bi-heart-pulse"></i> Health
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="/mysihat/pages/diet.php">
+            <i class="bi bi-egg-fried"></i> Diet
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="/mysihat/pages/points.php">
+            <i class="bi bi-stars"></i> Points
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="/mysihat/pages/leaderboard.php">
+            <i class="bi bi-trophy"></i> Leaderboard
+          </a>
+        </li>
+
+        <!-- ✅ Keep both modules' entries -->
+        <li class="nav-item">
+          <a class="nav-link" href="/mysihat/pages/achievements.php">
+            <i class="bi bi-award"></i> Achievements
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="/mysihat/pages/courses.php">
+            <i class="bi bi-collection-play"></i> Courses
+          </a>
+        </li>
       </ul>
 
       <!-- User Dropdown -->
@@ -32,7 +74,7 @@ $current_name = $_SESSION["user_name"] ?? "User";
           <a class="d-flex align-items-center text-decoration-none text-dark dropdown-toggle"
              href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="bi bi-person-circle fs-4 me-2"></i>
-            <?= htmlspecialchars($current_name) ?>
+            <?php echo htmlspecialchars($current_name); ?>
           </a>
 
           <ul class="dropdown-menu dropdown-menu-end shadow">
