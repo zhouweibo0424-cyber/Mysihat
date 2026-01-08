@@ -1,0 +1,50 @@
+.diet-tabs .nav-link {
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+.diet-card {
+  border-radius: 16px;
+}
+
+.diet-pre {
+  border: 1px solid rgba(17,24,39,0.10);
+  border-radius: 14px;
+  background: #f8fafc;
+  padding: 12px;
+  overflow: auto;
+  min-height: 120px;
+}
+
+.diet-surface {
+  border: 1px solid rgba(17,24,39,0.10);
+  border-radius: 14px;
+  background: #f8fafc;
+  padding: 12px;
+}
+
+#dietAdvice {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  overflow-x: hidden;
+}
+
+/* Report layout helpers (charts on the right) */
+.diet-chart-box {
+  border: 1px solid rgba(17,24,39,0.10);
+  border-radius: 14px;
+  background: #f8fafc;
+  padding: 10px;
+  height: 210px; /* chart height: keep it compact */
+}
+
+.diet-chart-box canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.diet-scroll {
+  max-height: 260px; /* prevent very long ranges from stretching the page */
+  overflow: auto;
+}
