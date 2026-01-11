@@ -280,4 +280,3 @@ function build_page_link(int $page): string {
 </div>
 
 <?php require_once __DIR__ . "/../partials/footer.php"; ?>
-
