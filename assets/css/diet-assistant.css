@@ -1,0 +1,109 @@
+.diet-tabs .nav-link {
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+.diet-card {
+  border-radius: 16px;
+}
+
+.diet-pre {
+  border: 1px solid rgba(17, 24, 39, 0.10);
+  border-radius: 14px;
+  background: #f8fafc;
+  padding: 12px;
+  overflow: auto;
+  min-height: 120px;
+}
+
+.diet-surface {
+  border: 1px solid rgba(17, 24, 39, 0.10);
+  border-radius: 14px;
+  background: #f8fafc;
+  padding: 12px;
+}
+
+#dietAdvice {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  overflow-x: hidden;
+}
+
+.diet-chart-box {
+  border: 1px solid rgba(17, 24, 39, 0.10);
+  border-radius: 14px;
+  background: #f8fafc;
+  padding: 10px;
+  height: 210px;
+}
+
+.diet-chart-box canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.diet-scroll {
+  max-height: 260px;
+  overflow: auto;
+}
+
+.goal-summary {
+  border: 1px solid rgba(17, 24, 39, 0.10);
+  border-radius: 14px;
+  padding: 16px;
+  background: #ffffff;
+  max-width: 520px;
+}
+
+.goal-summary .row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  font-size: 14px;
+}
+
+.goal-summary .row span {
+  color: #6b7280;
+}
+
+.goal-summary .row strong {
+  font-weight: 600;
+}
+
+.diet-breakdown th,
+.diet-breakdown td {
+  padding: 8px 14px;   
+  text-align: center;
+}
+
+.diet-breakdown th:first-child,
+.diet-breakdown td:first-child {
+  text-align: left;   
+}
+
+.diet-surface div {
+  margin-bottom: 6px; 
+}
+
+.goal-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  font-size: 14px;
+  border-bottom: 1px solid rgba(17, 24, 39, 0.08);
+}
+
+.goal-line:last-child {
+  border-bottom: none;
+}
+
+.goal-line .label {
+  color: #6b7280;
+}
+
+.goal-line .value {
+  font-weight: 600;
+}
+
