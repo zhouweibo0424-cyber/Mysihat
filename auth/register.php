@@ -6,7 +6,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 }
 
 $error_message = "";
-$success_message = "";
+// Removed $success_message because we now redirect immediately
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
   $name = trim($_POST["name"] ?? "");
@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   if ($name === "" || $email === "" || $password_plain === "") {
     $error_message = "Please fill in name, email, and password.";
   } else {
-    // Check existing email
+    // Check if email already exists
     $statement = $pdo->prepare("SELECT id FROM users WHERE email = :email LIMIT 1");
     $statement->execute([":email" => $email]);
     $existing = $statement->fetch();
@@ -33,7 +33,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         ":password_hash" => $password_hash
       ]);
 
-      $success_message = "Registration successful. You can login now.";
+      // === SUCCESS: Auto-login and redirect to profile completion ===
+      $new_user_id = $pdo->lastInsertId();  // Get the newly created user ID
+
+      // Set session variables (same as in login.php)
+      $_SESSION["user_id"] = (int)$new_user_id;
+      $_SESSION["user_name"] = $name;
+      $_SESSION["user_email"] = $email;
+
+      // Redirect to profile page with parameter to trigger the completion modal
+      header("Location: /mysihat/pages/profile.php?complete_profile=1");
+      exit();
+      // ==============================================================
     }
   }
 }
@@ -50,19 +61,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       <div class="alert alert-danger"><?php echo htmlspecialchars($error_message); ?></div>
     <?php endif; ?>
 
-    <?php if ($success_message !== ""): ?>
-      <div class="alert alert-success"><?php echo htmlspecialchars($success_message); ?></div>
-    <?php endif; ?>
-
     <form method="post" action="">
       <div class="mb-3">
         <label class="form-label">Name</label>
-        <input class="form-control" name="name" required placeholder="Your name">
+        <input class="form-control" name="name" value="<?php echo htmlspecialchars($name ?? ''); ?>" required placeholder="Your name">
       </div>
 
       <div class="mb-3">
         <label class="form-label">Email</label>
-        <input class="form-control" name="email" type="email" required placeholder="name@example.com">
+        <input class="form-control" name="email" type="email" value="<?php echo htmlspecialchars($email ?? ''); ?>" required placeholder="name@example.com">
       </div>
 
       <div class="mb-3">

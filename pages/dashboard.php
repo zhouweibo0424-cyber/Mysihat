@@ -78,7 +78,7 @@ $tip_text = "Tip: Try to reach 6,000–10,000 steps today. Small walk after meal
       </div>
     </div>
 
-    <div class="col-12">
+    <div class="col-12 col-md-6">
       <div class="card card-metric p-3">
         <div class="d-flex align-items-center gap-2">
           <div class="fs-4"><i class="bi bi-lightbulb"></i></div>
@@ -86,6 +86,21 @@ $tip_text = "Tip: Try to reach 6,000–10,000 steps today. Small walk after meal
             <div class="fw-semibold">Daily Tip</div>
             <div class="small-muted"><?php echo htmlspecialchars($tip_text); ?></div>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-6">
+      <div class="card card-metric p-3">
+        <div class="d-flex align-items-center justify-content-between">
+          <div>
+            <div class="fw-semibold mb-2">Training System</div>
+            <div class="small-muted mb-3">Sustainable workout planning with automatic adjustments</div>
+            <a href="/mysihat/training/index.php" class="btn btn-primary">
+              <i class="bi bi-activity"></i> Open Training System
+            </a>
+          </div>
+          <div class="fs-2"><i class="bi bi-activity"></i></div>
         </div>
       </div>
     </div>

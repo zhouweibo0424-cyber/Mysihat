@@ -1,0 +1,13 @@
+
+CREATE TABLE IF NOT EXISTS rewards (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    reward_name VARCHAR(100) NOT NULL,
+    points_required INT NOT NULL,
+    description VARCHAR(255)
+);
+
+
+INSERT INTO rewards (reward_name, points_required, description) VALUES
+('Healthy Badge', 50, 'Awarded for maintaining healthy habits'),
+('Fitness Coupon', 100, 'Discount coupon for fitness products'),
+('Premium Access', 200, 'Unlock premium features');
